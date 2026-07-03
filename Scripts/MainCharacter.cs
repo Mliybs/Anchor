@@ -7,7 +7,13 @@ public partial class MainCharacter : CharacterBody2D
 {
 	public const float Speed = 100.0f;
 	public const float JumpVelocity = -250.0f;
-	public AnchorBase? Anchor { get; set; }
+	public AnchorBase? Anchor { get; private set; }
+
+    public override void _Ready()
+    {
+		// 阻塞式加载，先这样
+		PickAnchor(ResourceLoader.Load<PackedScene>("res://Scenes/DefaultAnchor.tscn").Instantiate<AnchorBase>());
+    }
 
 	public override void _PhysicsProcess(double delta)
 	{
@@ -38,7 +44,30 @@ public partial class MainCharacter : CharacterBody2D
 			velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
 		}
 
+		if (Anchor is AnchorBase anchor)
+		{
+            if (Input.IsActionJustReleased(MouseLeftJustReleased))
+            {
+				anchor.ThrowAt(this, GetViewport().GetMousePosition());
+                LeaveAnchor();
+            }
+        }
+
 		Velocity = velocity;
 		MoveAndSlide();
 	}
+
+	public void PickAnchor(AnchorBase anchor)
+	{
+		Anchor = anchor;
+		anchor.Position = new(8, 4);
+		CallDeferred(Node.MethodName.AddChild, anchor);
+		
+    }
+
+    public AnchorBase LeaveAnchor()
+    {
+        var anchor = Anchor ?? throw new Exception();
+		return anchor;
+    }
 }

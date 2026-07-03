@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://00f7uwdjji3e"]
+
+[ext_resource type="Texture2D" uid="uid://claxp2ahpho50" path="res://Assets/Images/default_anchor.png" id="1_3dbaw"]
+[ext_resource type="Script" uid="uid://b6jdmboshk6m6" path="res://Scripts/DefaultAnchor.cs" id="1_fv24l"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_p6452"]
+radius = 7.0
+
+[node name="DefaultAnchor" type="CharacterBody2D" unique_id=1808941646 node_paths=PackedStringArray("CollisionShape")]
+collision_layer = 4
+script = ExtResource("1_fv24l")
+CollisionShape = NodePath("CollisionShape2D")
+Texture = ExtResource("1_3dbaw")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=180302831]
+texture = ExtResource("1_3dbaw")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1992178751]
+shape = SubResource("CircleShape2D_p6452")
+disabled = true
