@@ -1,15 +1,17 @@
 [gd_scene format=3 uid="uid://b181i4eipiqg4"]
 
-[ext_resource type="Texture2D" uid="uid://bmsdeawb6shg8" path="res://Assets/main_chara.png" id="1_7arym"]
+[ext_resource type="Texture2D" uid="uid://bmsdeawb6shg8" path="res://Assets/Images/main_chara.png" id="1_7arym"]
+[ext_resource type="Script" uid="uid://raqmj3l77vhn" path="res://Scripts/MainCharacter.cs" id="2_0ww3d"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_p6452"]
-size = Vector2(26, 28)
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_p6452"]
+points = PackedVector2Array(-12, -14, 12, -14, 12, 1, 8, 1, 7, 14, -7, 14, -8, 1, -12, 1)
 
 [node name="MainChara" type="CharacterBody2D" unique_id=294548571]
+script = ExtResource("2_0ww3d")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=273833799]
 texture = ExtResource("1_7arym")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1583264383]
 position = Vector2(0, 1)
-shape = SubResource("RectangleShape2D_p6452")
+shape = SubResource("ConvexPolygonShape2D_p6452")
