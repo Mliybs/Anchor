@@ -1,10 +1,13 @@
+using Anchor.Scripts;
 using Godot;
 using System;
 
+#nullable enable
 public partial class MainCharacter : CharacterBody2D
 {
 	public const float Speed = 100.0f;
 	public const float JumpVelocity = -250.0f;
+	public AnchorBase? Anchor { get; set; }
 
 	public override void _PhysicsProcess(double delta)
 	{
@@ -25,6 +28,7 @@ public partial class MainCharacter : CharacterBody2D
 		// Get the input direction and handle the movement/deceleration.
 		// As good practice, you should replace UI actions with custom gameplay actions.
 		Vector2 direction = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
+
 		if (direction != Vector2.Zero)
 		{
 			velocity.X = direction.X * Speed;
