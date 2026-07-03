@@ -1,3 +1,9 @@
 [gd_scene format=3 uid="uid://c3sytr0n06bp8"]
 
-[node name="Node2D" type="Node2D" unique_id=1347474382]
+[node name="Background" type="ColorRect" unique_id=663221948]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
