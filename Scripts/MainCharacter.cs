@@ -34,6 +34,8 @@ public partial class MainCharacter : CharacterBody2D
 		if (!IsOnFloor())
 		{
 			velocity += GetGravity() * (float)delta;
+
+			velocity.Y = float.Clamp(float.Abs(velocity.Y), 0, 500) * float.Sign(velocity.Y);
 		}
 
 		// Handle Jump.
@@ -44,7 +46,7 @@ public partial class MainCharacter : CharacterBody2D
 
 		// Get the input direction and handle the movement/deceleration.
 		// As good practice, you should replace UI actions with custom gameplay actions.
-		Vector2 direction = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
+		Vector2 direction = Input.GetAxis("ui_left", "ui_right") * Vector2.Right;
 
 		if (direction != Vector2.Zero)
 		{
@@ -57,10 +59,15 @@ public partial class MainCharacter : CharacterBody2D
 
 		if (Anchor is AnchorBase anchor)
 		{
-            if (Input.IsActionJustReleased(MouseLeftJustReleased))
+			if (_hasThrown)
+			{
+				if (Input.IsMouseButtonPressed(MouseButton.Left) && anchor.TryPull(this, out var _velocity))
+					velocity += _velocity;
+			}
+
+            else if (Input.IsActionJustReleased(MouseLeftJustReleased))
             {
 				anchor.ThrowAtMousePosition(this);
-                LeaveAnchor();
 				_hasThrown = true;
             }
         }

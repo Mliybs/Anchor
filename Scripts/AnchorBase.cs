@@ -23,6 +23,8 @@ namespace Anchor.Scripts
 
         protected bool _isThrown;
 
+        public bool IsOnWall { get; private set; }
+
         public override void _Process(double delta)
         {
             if (!_isThrown) return;
@@ -43,6 +45,7 @@ namespace Anchor.Scripts
         protected virtual void OnCollision(Node body)
         {
             SetDeferred(PropertyName.Freeze, true);
+            IsOnWall = true;
         }
 
         public void ThrowAtMousePosition(MainCharacter chara)
@@ -65,6 +68,12 @@ namespace Anchor.Scripts
                 ApplyImpulse(direction * Speed);
                 _direction = null;
             }
+        }
+
+        public virtual bool TryPull(MainCharacter chara, out Vector2 velocity)
+        {
+            velocity = default;
+            return false;
         }
     }
 }
