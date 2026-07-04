@@ -88,3 +88,10 @@ scale = Vector2(1.5760868, 1.666666)
 texture = ExtResource("3_1b371")
 region_enabled = true
 region_rect = Rect2(0, 25.948698, 23, 12.051302)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=390006196]
+
+[node name="Polygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=14060641]
+position = Vector2(0, -108)
+scale = Vector2(1, 1.5)
+polygon = PackedVector2Array(0, 216, 384, 216, 384, 218, 0, 218)
