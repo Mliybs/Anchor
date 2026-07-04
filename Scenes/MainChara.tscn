@@ -9,9 +9,10 @@ size = Vector2(24, 28)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ihk86"]
 size = Vector2(24, 28)
 
-[node name="MainChara" type="CharacterBody2D" unique_id=294548571]
+[node name="MainChara" type="CharacterBody2D" unique_id=294548571 node_paths=PackedStringArray("Area")]
 collision_layer = 2
 script = ExtResource("2_0ww3d")
+Area = NodePath("Area2D")
 
 [node name="Character" type="Sprite2D" parent="." unique_id=273833799]
 texture = ExtResource("1_7arym")

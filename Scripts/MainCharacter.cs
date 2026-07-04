@@ -1,6 +1,7 @@
 using Anchor.Scripts;
 using Godot;
 using System;
+using System.Threading.Tasks;
 
 public partial class MainCharacter : CharacterBody2D
 {
@@ -9,6 +10,8 @@ public partial class MainCharacter : CharacterBody2D
 
 	[Export]
 	public Line2D Line { get; set; }
+	[Export]
+	public Area2D Area { get; set; }
 #nullable enable
     public AnchorBase? Anchor { get; private set; }
 
@@ -27,7 +30,7 @@ public partial class MainCharacter : CharacterBody2D
 			Line.SetPointPosition(0, Position);
     }
 
-	public override void _PhysicsProcess(double delta)
+	public override async void _PhysicsProcess(double delta)
 	{
 		Vector2 velocity = Velocity;
 
@@ -68,6 +71,9 @@ public partial class MainCharacter : CharacterBody2D
 				{
                     anchor.ThrowAtMousePosition(this);
                     _hasThrown = true;
+
+					await Task.Delay(100);
+                    Area.Monitoring = true;
                 }
             }
         }
@@ -93,6 +99,7 @@ public partial class MainCharacter : CharacterBody2D
 		Anchor = anchor;
 		anchor.Position = new(8, 4);
 		CallDeferred(MethodName.AddChild, anchor);
+		Area.Monitoring = false;
     }
 
     public AnchorBase LeaveAnchor()
@@ -104,8 +111,9 @@ public partial class MainCharacter : CharacterBody2D
 
 	public void OnAnchorRecovery(Node2D node)
 	{
-		if (node is AnchorBase anchor && (anchor.IsOnWall || (anchor.LinearVelocity.Dot(Position - anchor.Position) > 10) && anchor == Anchor))
+		if (node is AnchorBase anchor && (anchor.IsOnWall || (anchor.LinearVelocity.Dot(Position - anchor.Position) > 0) && anchor == Anchor))
         {
+			Area.Monitoring = false;
 			_shouldSuppressThrow = anchor.IsOnWall;
 			anchor.CallDeferred(MethodName.Reparent, this, false);
             anchor.SetDeferred(AnchorBase.PropertyName.Position, new Vector2(8, 4));
