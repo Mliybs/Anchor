@@ -16,11 +16,26 @@ public partial class Car : CharacterBody2D
 		baseY = Position.Y;
 		Sprite = GetNode<Sprite2D>("Sprite2D");
 	}
+
+
 	public void 第一幕(double delta)
 	{
 		// 永远只前进，不改Y速度
 		Position += new Vector2(Speed * (float)delta, 0);
 
+		颠簸(delta);
+	}
+
+	public void 开始第二幕()
+	{
+	}
+	public void 第二幕(double delta)
+	{
+		Sprite.Rotation += 50f * (float)delta;
+	}
+
+	public void 颠簸(double delta)
+	{
 		// 随机触发“上抬”
 		if (Random.Shared.Next(0, 100) < 1)
 		{
@@ -38,14 +53,7 @@ public partial class Car : CharacterBody2D
 			// 下一帧回到原位
 			Position = new Vector2(Position.X, baseY);
 		}
-	}
 
-	public void 开始第二幕()
-	{
-	}
-	public void 第二幕(double delta)
-	{
-		Sprite.Rotation += 50f * (float)delta;
 	}
 }
 
