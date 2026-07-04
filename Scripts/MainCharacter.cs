@@ -13,6 +13,7 @@ public partial class MainCharacter : CharacterBody2D
     public AnchorBase? Anchor { get; private set; }
 
 	private bool _hasThrown;
+	private bool _shouldSuppressThrow;
 
     public override void _Ready()
     {
@@ -48,31 +49,42 @@ public partial class MainCharacter : CharacterBody2D
 		// As good practice, you should replace UI actions with custom gameplay actions.
 		Vector2 direction = Input.GetAxis("ui_left", "ui_right") * Vector2.Right;
 
-		if (direction != Vector2.Zero)
-		{
-			velocity.X = direction.X * Speed;
-		}
-		else
-		{
-			velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
-		}
+		var isPulling = false;
 
 		if (Anchor is AnchorBase anchor)
 		{
 			if (_hasThrown)
 			{
-				if (Input.IsMouseButtonPressed(MouseButton.Left) && anchor.TryPull(this, out var _velocity))
-					velocity += _velocity;
+				if (Input.IsMouseButtonPressed(MouseButton.Left) && (isPulling = anchor.TryPull(this, out var _velocity)))
+				{
+                    velocity += _velocity;
+                }
 			}
 
             else if (Input.IsActionJustReleased(MouseLeftJustReleased))
             {
-				anchor.ThrowAtMousePosition(this);
-				_hasThrown = true;
+				if (_shouldSuppressThrow) _shouldSuppressThrow = false;
+				else
+				{
+                    anchor.ThrowAtMousePosition(this);
+                    _hasThrown = true;
+                }
             }
         }
 
-		Velocity = velocity;
+		if (!isPulling)
+		{
+            if (direction != Vector2.Zero)
+            {
+                velocity.X = direction.X * Speed;
+            }
+            else
+            {
+                velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
+            }
+        }
+
+        Velocity = velocity;
 		MoveAndSlide();
 	}
 
@@ -80,8 +92,7 @@ public partial class MainCharacter : CharacterBody2D
 	{
 		Anchor = anchor;
 		anchor.Position = new(8, 4);
-		CallDeferred(Node.MethodName.AddChild, anchor);
-		
+		CallDeferred(MethodName.AddChild, anchor);
     }
 
     public AnchorBase LeaveAnchor()
@@ -90,4 +101,16 @@ public partial class MainCharacter : CharacterBody2D
 		Anchor = null;
 		return anchor;
     }
+
+	public void OnAnchorRecovery(Node2D node)
+	{
+		if (node is AnchorBase anchor && (anchor.IsOnWall || (anchor.LinearVelocity.Dot(Position - anchor.Position) > 10) && anchor == Anchor))
+        {
+			_shouldSuppressThrow = anchor.IsOnWall;
+			anchor.CallDeferred(MethodName.Reparent, this, false);
+            anchor.SetDeferred(AnchorBase.PropertyName.Position, new Vector2(8, 4));
+			anchor.CallDeferred(nameof(anchor.Recover));
+            _hasThrown = false;
+        }
+	}
 }

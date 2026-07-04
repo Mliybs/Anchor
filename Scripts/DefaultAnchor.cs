@@ -9,9 +9,9 @@ namespace Anchor.Scripts
 {
     public partial class DefaultAnchor : AnchorBase
     {
-        public const float PullForce = 0.2f;
-        public const float Min = 150f;
-        public const float Max = 400f;
+        public const float PullForce = 0.5f;
+        public const float Min = 100f;
+        public const float Max = 300f;
 
         public override bool TryPull(MainCharacter chara, out Vector2 velocity)
         {

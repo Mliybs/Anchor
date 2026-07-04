@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Godot.TextServer;
 
 namespace Anchor.Scripts
 {
@@ -17,13 +18,15 @@ namespace Anchor.Scripts
 
         public Line2D Line { get; protected set; }
 
-        public virtual float Speed => 75f;
+        public virtual float Speed => 175f;
 
         protected Vector2? _direction;
 
         protected bool _isThrown;
 
         public bool IsOnWall { get; private set; }
+#nullable enable
+        public MainCharacter? _owner;
 
         public override void _Process(double delta)
         {
@@ -51,7 +54,7 @@ namespace Anchor.Scripts
         public void ThrowAtMousePosition(MainCharacter chara)
         {
             Freeze = false;
-            chara.RemoveChild(this);
+            GetParent()?.RemoveChild(this);
             chara.GetParent().AddChild(this);
             var position = chara.Position;
             Position = position;
@@ -59,14 +62,17 @@ namespace Anchor.Scripts
             _direction = directionVector;
             Rotation = (float)(directionVector.Angle() -  (Math.PI / 180) * 90);
             _isThrown = true;
+
+            _owner = chara;
+
+            ApplyImpulse(directionVector * Speed);
         }
 
         public override void _PhysicsProcess(double delta)
         {
-            if (_direction is Vector2 direction)
+            if (_owner is not null)
             {
-                ApplyImpulse(direction * Speed);
-                _direction = null;
+                ApplyForce((_owner.Position - Position).Normalized() * 100);
             }
         }
 
@@ -74,6 +80,17 @@ namespace Anchor.Scripts
         {
             velocity = default;
             return false;
+        }
+
+        public void Recover()
+        {
+            _owner = null;
+            SetDeferred(PropertyName.Freeze, true);
+            Rotation = 0;
+            _isThrown = false;
+            IsOnWall = false;
+            if (Line.GetPointCount() > 1)
+                Line.RemovePoint(1);
         }
     }
 }
