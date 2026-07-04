@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Anchor": {
+      "commandName": "Project",
+      "debugEngines": "managed"
+    }
+  }
+}

@@ -3,38 +3,34 @@ using System;
 
 public partial class Car : CharacterBody2D
 {
-	public const float Speed = 300.0f;
-	public const float JumpVelocity = -400.0f;
-
-	public override void _PhysicsProcess(double delta)
+	public const float Speed = 30.0f;
+	private float baseY;        // 原始高度
+	private bool jumpUp = false;
+	public override void _Ready()
 	{
-		Vector2 velocity = Velocity;
+		baseY = Position.Y;
+	}
+	public void Process(double delta)
+	{
+		// 永远只前进，不改Y速度
+		Position += new Vector2(Speed * (float)delta, 0);
 
-		// Add the gravity.
-		if (!IsOnFloor())
+		// 随机触发“上抬”
+		if (Random.Shared.Next(0, 100) < 1)
 		{
-			velocity += GetGravity() * (float)delta;
+			jumpUp = true;
 		}
 
-		// Handle Jump.
-		if (Input.IsActionJustPressed("ui_accept") && IsOnFloor())
+		// 上抬2像素
+		if (jumpUp)
 		{
-			velocity.Y = JumpVelocity;
-		}
-
-		// Get the input direction and handle the movement/deceleration.
-		// As good practice, you should replace UI actions with custom gameplay actions.
-		Vector2 direction = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
-		if (direction != Vector2.Zero)
-		{
-			velocity.X = direction.X * Speed;
+			Position = new Vector2(Position.X, baseY - 1);
+			jumpUp = false; // 只持续一帧
 		}
 		else
 		{
-			velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
+			// 下一帧回到原位
+			Position = new Vector2(Position.X, baseY);
 		}
-
-		Velocity = velocity;
-		MoveAndSlide();
 	}
 }
