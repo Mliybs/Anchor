@@ -2,17 +2,28 @@ using Anchor.Scripts;
 using Godot;
 using System;
 
-#nullable enable
 public partial class MainCharacter : CharacterBody2D
 {
 	public const float Speed = 100.0f;
 	public const float JumpVelocity = -250.0f;
-	public AnchorBase? Anchor { get; private set; }
+
+	[Export]
+	public Line2D Line { get; set; }
+#nullable enable
+    public AnchorBase? Anchor { get; private set; }
+
+	private bool _hasThrown;
 
     public override void _Ready()
     {
 		// 阻塞式加载，先这样
 		PickAnchor(ResourceLoader.Load<PackedScene>("res://Scenes/DefaultAnchor.tscn").Instantiate<AnchorBase>());
+    }
+
+    public override void _Process(double delta)
+    {
+		if (_hasThrown)
+			Line.SetPointPosition(0, Position);
     }
 
 	public override void _PhysicsProcess(double delta)
@@ -23,6 +34,8 @@ public partial class MainCharacter : CharacterBody2D
 		if (!IsOnFloor())
 		{
 			velocity += GetGravity() * (float)delta;
+
+			velocity.Y = float.Clamp(float.Abs(velocity.Y), 0, 500) * float.Sign(velocity.Y);
 		}
 
 		// Handle Jump.
@@ -33,7 +46,7 @@ public partial class MainCharacter : CharacterBody2D
 
 		// Get the input direction and handle the movement/deceleration.
 		// As good practice, you should replace UI actions with custom gameplay actions.
-		Vector2 direction = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
+		Vector2 direction = Input.GetAxis("ui_left", "ui_right") * Vector2.Right;
 
 		if (direction != Vector2.Zero)
 		{
@@ -46,10 +59,16 @@ public partial class MainCharacter : CharacterBody2D
 
 		if (Anchor is AnchorBase anchor)
 		{
-            if (Input.IsActionJustReleased(MouseLeftJustReleased))
+			if (_hasThrown)
+			{
+				if (Input.IsMouseButtonPressed(MouseButton.Left) && anchor.TryPull(this, out var _velocity))
+					velocity += _velocity;
+			}
+
+            else if (Input.IsActionJustReleased(MouseLeftJustReleased))
             {
-				anchor.ThrowAt(this, GetViewport().GetMousePosition());
-                LeaveAnchor();
+				anchor.ThrowAtMousePosition(this);
+				_hasThrown = true;
             }
         }
 
@@ -68,6 +87,7 @@ public partial class MainCharacter : CharacterBody2D
     public AnchorBase LeaveAnchor()
     {
         var anchor = Anchor ?? throw new Exception();
+		Anchor = null;
 		return anchor;
     }
 }
