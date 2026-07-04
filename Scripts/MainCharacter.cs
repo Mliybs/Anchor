@@ -13,22 +13,23 @@ public partial class MainCharacter : CharacterBody2D
 	[Export]
 	public Area2D Area { get; set; }
 #nullable enable
-    public AnchorBase? Anchor { get; private set; }
+	public AnchorBase? Anchor { get; private set; }
 
-	private bool _hasThrown;
+	private enum PlayerAnchorState { None, Attached, Thrown, Pulling }
+	private PlayerAnchorState _anchorState = PlayerAnchorState.None;
 	private bool _shouldSuppressThrow;
 
-    public override void _Ready()
-    {
+	public override void _Ready()
+	{
 		// 阻塞式加载，先这样
 		PickAnchor(ResourceLoader.Load<PackedScene>("res://Scenes/DefaultAnchor.tscn").Instantiate<AnchorBase>());
-    }
+	}
 
-    public override void _Process(double delta)
-    {
-		if (_hasThrown)
+	public override void _Process(double delta)
+	{
+		if (_anchorState is PlayerAnchorState.Thrown or PlayerAnchorState.Attached or PlayerAnchorState.Pulling)
 			Line.SetPointPosition(0, Position);
-    }
+	}
 
 	public override async void _PhysicsProcess(double delta)
 	{
@@ -56,74 +57,102 @@ public partial class MainCharacter : CharacterBody2D
 
 		if (Anchor is AnchorBase anchor)
 		{
-			if (_hasThrown)
+			switch (_anchorState)
 			{
-                if (Input.IsActionJustReleased(MouseRightJustReleased) && anchor.IsOnWall)
-                {
-                    anchor.TryPullAnchor();
-                }
+				case PlayerAnchorState.Thrown:
+					if (Input.IsActionJustReleased(MouseRightJustReleased) && anchor.IsOnWall)
+					{
+						anchor.TryPullAnchor();
+						_anchorState = PlayerAnchorState.Pulling;
+					}
 
-                if (Input.IsMouseButtonPressed(MouseButton.Left) && (isPulling = anchor.TryPullPlayer(this, out var _velocity)))
-				{
-                    velocity += _velocity;
-                }
+					if (Input.IsMouseButtonPressed(MouseButton.Left) && (isPulling = anchor.TryPullPlayer(this, out var _velocity)))
+					{
+						velocity += _velocity;
+						_anchorState = PlayerAnchorState.Pulling;
+					}
+
+					break;
+
+				case PlayerAnchorState.Attached:
+					if (Input.IsActionJustReleased(MouseLeftJustReleased))
+					{
+						if (_shouldSuppressThrow) _shouldSuppressThrow = false;
+						else
+						{
+							anchor.ThrowAtPositionLocalToParam(this, GetLocalMousePosition());
+							_anchorState = PlayerAnchorState.Thrown;
+
+							await Task.Delay(100);
+							Area.Monitoring = true;
+						}
+					}
+
+					break;
+
+				case PlayerAnchorState.Pulling:
+					// 保持拉拽时的行为：允许 Anchor.TryPullPlayer 在上面应用速度
+					if (Input.IsMouseButtonPressed(MouseButton.Left) && (isPulling = anchor.TryPullPlayer(this, out var _v2)))
+					{
+						velocity += _v2;
+					}
+					else
+					{
+						// 当停止按下左键时，回到 Thrown 状态以允许再次操作
+						if (!Input.IsMouseButtonPressed(MouseButton.Left))
+							_anchorState = PlayerAnchorState.Thrown;
+					}
+
+					break;
+
+				default:
+					break;
 			}
-
-            else if (Input.IsActionJustReleased(MouseLeftJustReleased))
-            {
-				if (_shouldSuppressThrow) _shouldSuppressThrow = false;
-				else
-				{
-                    anchor.ThrowAtMousePosition(this);
-                    _hasThrown = true;
-
-					await Task.Delay(100);
-                    Area.Monitoring = true;
-                }
-            }
-        }
+		}
 
 		if (!isPulling)
 		{
-            if (direction != Vector2.Zero)
-            {
-                velocity.X = direction.X * Speed;
-            }
-            else
-            {
-                velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
-            }
-        }
+			if (direction != Vector2.Zero)
+			{
+				velocity.X = direction.X * Speed;
+			}
+			else
+			{
+				velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
+			}
+		}
 
-        Velocity = velocity;
+		Velocity = velocity;
 		MoveAndSlide();
 	}
 
 	public void PickAnchor(AnchorBase anchor)
 	{
 		Anchor = anchor;
-		anchor.Position = new(8, 4);
+		anchor.SetDeferred(Node2D.PropertyName.Position, new Vector2(8, 4));
 		CallDeferred(MethodName.AddChild, anchor);
 		Area.Monitoring = false;
-    }
+		_anchorState = PlayerAnchorState.Attached;
+	}
 
-    public AnchorBase LeaveAnchor()
-    {
-        var anchor = Anchor ?? throw new Exception();
+	public AnchorBase LeaveAnchor()
+	{
+		var anchor = Anchor ?? throw new Exception();
 		Anchor = null;
+		_anchorState = PlayerAnchorState.None;
 		return anchor;
-    }
+	}
 
 	public void OnAnchorRecovery(Node2D node)
 	{
 		if (node is AnchorBase anchor && (anchor.IsOnWall || (anchor.LinearVelocity.Dot(Position - anchor.Position) > 0) && anchor == Anchor))
-        {
-			Area.Monitoring = false;
-			_shouldSuppressThrow = anchor.IsOnWall;
+		{
+			Area.SetDeferred(Area2D.PropertyName.Monitoring, false);
+			_shouldSuppressThrow = _anchorState is PlayerAnchorState.Pulling;
 			anchor.Recover();
-			anchor.CallDeferred(MethodName.Reparent, this, false);
             anchor.SetDeferred(AnchorBase.PropertyName.Position, new Vector2(8, 4));
-            _hasThrown = false;
-        }
+            anchor.CallDeferred(MethodName.Reparent, this, false);
+			_anchorState = PlayerAnchorState.Attached;
+		}
 	}
 }
