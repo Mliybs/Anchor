@@ -58,7 +58,12 @@ public partial class MainCharacter : CharacterBody2D
 		{
 			if (_hasThrown)
 			{
-				if (Input.IsMouseButtonPressed(MouseButton.Left) && (isPulling = anchor.TryPull(this, out var _velocity)))
+                if (Input.IsActionJustReleased(MouseRightJustReleased) && anchor.IsOnWall)
+                {
+                    anchor.TryPullAnchor();
+                }
+
+                if (Input.IsMouseButtonPressed(MouseButton.Left) && (isPulling = anchor.TryPullPlayer(this, out var _velocity)))
 				{
                     velocity += _velocity;
                 }
@@ -115,9 +120,9 @@ public partial class MainCharacter : CharacterBody2D
         {
 			Area.Monitoring = false;
 			_shouldSuppressThrow = anchor.IsOnWall;
+			anchor.Recover();
 			anchor.CallDeferred(MethodName.Reparent, this, false);
             anchor.SetDeferred(AnchorBase.PropertyName.Position, new Vector2(8, 4));
-			anchor.CallDeferred(nameof(anchor.Recover));
             _hasThrown = false;
         }
 	}

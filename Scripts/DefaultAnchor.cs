@@ -13,7 +13,7 @@ namespace Anchor.Scripts
         public const float Min = 100f;
         public const float Max = 300f;
 
-        public override bool TryPull(MainCharacter chara, out Vector2 velocity)
+        public override bool TryPullPlayer(MainCharacter chara, out Vector2 velocity)
         {
             if (!IsOnWall)
             {

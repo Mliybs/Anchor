@@ -76,7 +76,18 @@ namespace Anchor.Scripts
             }
         }
 
-        public virtual bool TryPull(MainCharacter chara, out Vector2 velocity)
+        public virtual bool TryPullAnchor()
+        {
+            if (_owner is not null)
+            {
+                Freeze = false;
+                return true;
+            }
+
+            else return false;
+        }
+
+        public virtual bool TryPullPlayer(MainCharacter chara, out Vector2 velocity)
         {
             velocity = default;
             return false;
