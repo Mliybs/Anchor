@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Anchor.Scripts
 {
-    public partial class DefaultAnchor : AnchorBase
-    {
-    }
+	public partial class DefaultAnchor : AnchorBase
+	{
+	}
 }
