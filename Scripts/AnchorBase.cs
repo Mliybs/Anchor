@@ -18,6 +18,9 @@ namespace Anchor.Scripts
         [Export]
         public Texture2D Texture { get; protected set; }
 
+        [Export]
+        public Sprite2D Sprite { get; set; }
+
         public Line2D Line { get; protected set; }
 
         public virtual float Speed => 175f;

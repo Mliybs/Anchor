@@ -143,8 +143,7 @@ Sprite = NodePath("Character")
 
 [node name="Character" type="AnimatedSprite2D" parent="." unique_id=920890668]
 sprite_frames = SubResource("SpriteFrames_ihk86")
-animation = &"grounded"
-frame_progress = 1.0
+animation = &"idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1583264383]
 position = Vector2(0, 1.5)

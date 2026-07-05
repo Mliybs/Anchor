@@ -30,8 +30,8 @@ public partial class MainCharacter : CharacterBody2D
 
 	public override void _Process(double delta)
 	{
-		if (_anchorState is PlayerAnchorState.Thrown or PlayerAnchorState.Attached or PlayerAnchorState.Pulling)
-			Line.SetPointPosition(0, Position);
+		if (_anchorState is PlayerAnchorState.Thrown or PlayerAnchorState.Pulling)
+			Line.SetPointPosition(0, Position + new Vector2(Sprite.FlipH ? 10 : -10, -7));
 	}
 
 	public override async void _PhysicsProcess(double delta)
@@ -136,7 +136,12 @@ public partial class MainCharacter : CharacterBody2D
 			}
 		}
 
-		Sprite.FlipH = velocity.X < 0;
+		if (velocity.X != 0)
+		{
+			Sprite.FlipH = velocity.X < 0;
+			if (_anchorState is PlayerAnchorState.Attached)
+				Anchor?.Position = Anchor.Position with { X = float.Abs(Anchor.Position.X) * (velocity.X < 0 ? 1 : -1 ) };
+		}
 
         if (!(Sprite.IsPlaying() && Sprite.Animation == "grounded"))
         {
@@ -158,7 +163,7 @@ public partial class MainCharacter : CharacterBody2D
 	public void PickAnchor(AnchorBase anchor)
 	{
 		Anchor = anchor;
-		anchor.SetDeferred(Node2D.PropertyName.Position, new Vector2(8, 4));
+		anchor.SetDeferred(Node2D.PropertyName.Position, new Vector2(-13, -1));
 		CallDeferred(MethodName.AddChild, anchor);
 		Area.Monitoring = false;
 		_anchorState = PlayerAnchorState.Attached;
@@ -179,7 +184,7 @@ public partial class MainCharacter : CharacterBody2D
 			Area.SetDeferred(Area2D.PropertyName.Monitoring, false);
 			_shouldSuppressThrow = _anchorState is PlayerAnchorState.Pulling;
 			anchor.Recover();
-            anchor.SetDeferred(AnchorBase.PropertyName.Position, new Vector2(8, 4));
+            anchor.SetDeferred(AnchorBase.PropertyName.Position, new Vector2(-13, -1));
             anchor.CallDeferred(MethodName.Reparent, this, false);
 			_anchorState = PlayerAnchorState.Attached;
 		}

@@ -2,11 +2,13 @@
 
 [ext_resource type="Texture2D" uid="uid://claxp2ahpho50" path="res://Assets/Images/default_anchor.png" id="1_3dbaw"]
 [ext_resource type="Script" uid="uid://b6jdmboshk6m6" path="res://Scripts/DefaultAnchor.cs" id="1_fv24l"]
+[ext_resource type="Texture2D" uid="uid://1inx7sud1370" path="res://Assets/Images/anchor.png" id="3_u6xm5"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_p6452"]
-radius = 7.0
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0ww3d"]
+radius = 3.0
+height = 12.0
 
-[node name="DefaultAnchor" type="RigidBody2D" unique_id=1885690678 node_paths=PackedStringArray("CollisionShape")]
+[node name="DefaultAnchor" type="RigidBody2D" unique_id=1885690678 node_paths=PackedStringArray("CollisionShape", "Sprite")]
 collision_layer = 4
 mass = 0.5
 gravity_scale = 0.001
@@ -16,9 +18,12 @@ max_contacts_reported = 1
 script = ExtResource("1_fv24l")
 CollisionShape = NodePath("CollisionShape2D")
 Texture = ExtResource("1_3dbaw")
+Sprite = NodePath("Sprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=180302831]
-texture = ExtResource("1_3dbaw")
+texture = ExtResource("3_u6xm5")
+hframes = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1992178751]
-shape = SubResource("CircleShape2D_p6452")
+position = Vector2(0, -1)
+shape = SubResource("CapsuleShape2D_0ww3d")
