@@ -12,6 +12,8 @@ public partial class MainCharacter : CharacterBody2D
 	public Line2D Line { get; set; }
 	[Export]
 	public Area2D Area { get; set; }
+	[Export]
+	public AnimatedSprite2D Sprite { get; set; }
 #nullable enable
 	public AnchorBase? Anchor { get; private set; }
 
@@ -23,7 +25,8 @@ public partial class MainCharacter : CharacterBody2D
 	{
 		// 阻塞式加载，先这样
 		PickAnchor(ResourceLoader.Load<PackedScene>("res://Scenes/DefaultAnchor.tscn").Instantiate<AnchorBase>());
-	}
+        Sprite.Play("idle");
+    }
 
 	public override void _Process(double delta)
 	{
@@ -38,15 +41,26 @@ public partial class MainCharacter : CharacterBody2D
 		// Add the gravity.
 		if (!IsOnFloor())
 		{
+			var signA = float.Sign(velocity.Y);
 			velocity += GetGravity() * (float)delta;
 
 			velocity.Y = float.Clamp(float.Abs(velocity.Y), 0, 500) * float.Sign(velocity.Y);
+            var signB = float.Sign(velocity.Y);
+
+			if (signA != signB && signA + signB == 0)
+				Sprite.Play("fall");
+        }
+
+		else if (_anchorState is not PlayerAnchorState.Pulling && Sprite.Animation == "fall")
+		{
+			Sprite.Play("grounded");
 		}
 
 		// Handle Jump.
 		if (Input.IsActionJustPressed("ui_accept") && IsOnFloor())
 		{
 			velocity.Y = JumpVelocity;
+			Sprite.Play("jump");
 		}
 
 		// Get the input direction and handle the movement/deceleration.
@@ -122,7 +136,22 @@ public partial class MainCharacter : CharacterBody2D
 			}
 		}
 
-		Velocity = velocity;
+		Sprite.FlipH = velocity.X < 0;
+
+        if (!(Sprite.IsPlaying() && Sprite.Animation == "grounded"))
+        {
+            if (Velocity is (0, 0))
+            {
+                Sprite.Play("idle");
+            }
+
+            else if (Velocity is (not 0, 0))
+            {
+                Sprite.Play("walk");
+            }
+        }
+
+        Velocity = velocity;
 		MoveAndSlide();
 	}
 
