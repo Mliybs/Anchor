@@ -1,0 +1,52 @@
+[gd_scene format=4 uid="uid://vqrw50fgr4g3"]
+
+[ext_resource type="PackedScene" uid="uid://b181i4eipiqg4" path="res://Scenes/MainChara.tscn" id="1_0x0mv"]
+[ext_resource type="Script" uid="uid://tyofqoata2jw" path="res://Scripts/Stage1.cs" id="1_twg8k"]
+[ext_resource type="TileSet" uid="uid://chfpj1pta3gu0" path="res://Scenes/TileMap/MainTileSet.tres" id="2_bgp44"]
+[ext_resource type="PackedScene" uid="uid://cxo4edvx6bec2" path="res://Scenes/background.tscn" id="2_h603c"]
+[ext_resource type="Texture2D" uid="uid://ci5klgvqaqd84" path="res://Assets/Images/door.png" id="3_tqwdr"]
+[ext_resource type="Script" uid="uid://cowcfpl0a7kxy" path="res://Scripts/Door.cs" id="4_twg8k"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_382ya"]
+size = Vector2(25.5, 42)
+
+[node name="Root" type="Node2D" unique_id=523563132]
+script = ExtResource("1_twg8k")
+metadata/_edit_use_anchors_ = true
+
+[node name="Background" parent="." unique_id=1030978225 instance=ExtResource("2_h603c")]
+offset_top = -1.0
+offset_bottom = -1.0
+
+[node name="Line" type="Line2D" parent="." unique_id=883669342]
+points = PackedVector2Array(0, 0)
+width = 2.0
+default_color = Color(0.010090301, 0.010090301, 0.010090301, 1)
+
+[node name="MainChara" parent="." unique_id=294548571 node_paths=PackedStringArray("Line") instance=ExtResource("1_0x0mv")]
+position = Vector2(61, 167)
+scale = Vector2(0.78, 0.78)
+Line = NodePath("../Line")
+
+[node name="Camera2D" type="Camera2D" parent="MainChara" unique_id=208161970]
+scale = Vector2(1.2820513, 1.2820513)
+position_smoothing_enabled = true
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1406508268]
+tile_map_data = PackedByteArray("AAAAAAYAIgAAAAAAAAABAAYAIgAAAAAAAAACAAYAIgAAAAAAAAADAAYAIgAAAAAAAAAEAAYAIgAAAAAAAAAFAAYAIgAAAAAAAAAGAAYAIgAAAAAAAAAHAAYAIgAAAAAAAAAIAAYAIgAAAAAAAAAJAAYAIgAAAAAAAAAKAAYAIgAAAAAAAAALAAYAIgAAAAAAAAAMAAYAIgAAAAAAAAANAAYAIgAAAAAAAAAOAAYAIgAAAAAAAAAPAAYAIgAAAAAAAAAQAAYAIgAAAAAAAAARAAYAIgAAAAAAAAASAAYAIgAAAAAAAAATAAYAIgAAAAAAAAAUAAYAIgAAAAAAAAAVAAYAIgAAAAAAAAAWAAYAIgAAAAAAAAAXAAYAIgAAAAAAAAA=")
+tile_set = ExtResource("2_bgp44")
+
+[node name="Door" type="Sprite2D" parent="." unique_id=1203793621 node_paths=PackedStringArray("Area2D", "CollisionShape")]
+position = Vector2(738, 174)
+texture = ExtResource("3_tqwdr")
+script = ExtResource("4_twg8k")
+TargetScenePath = "res://Scenes/MainGame.tscn"
+Area2D = NodePath("Area2D")
+CollisionShape = NodePath("Area2D/CollisionShape2D")
+
+[node name="Area2D" type="Area2D" parent="Door" unique_id=549099923]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Door/Area2D" unique_id=1841707446]
+position = Vector2(0, -4)
+shape = SubResource("RectangleShape2D_382ya")

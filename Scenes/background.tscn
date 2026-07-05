@@ -1,0 +1,64 @@
+[gd_scene format=3 uid="uid://cxo4edvx6bec2"]
+
+[ext_resource type="Texture2D" uid="uid://bxh2l8e04ikv4" path="res://Assets/Images/Background/1.png" id="2_42s4r"]
+[ext_resource type="Texture2D" uid="uid://c7alvlvermyc3" path="res://Assets/Images/Background/2.png" id="3_kopta"]
+[ext_resource type="Texture2D" uid="uid://658efxsl5r6v" path="res://Assets/Images/Background/3.png" id="4_wi0l6"]
+[ext_resource type="Texture2D" uid="uid://6uaqaaeyp63t" path="res://Assets/Images/Background/4.png" id="5_b4xn0"]
+[ext_resource type="Texture2D" uid="uid://dut4465nwhor4" path="res://Assets/Images/Background/5.png" id="6_bdh0s"]
+
+[node name="Background" type="TextureRect" unique_id=1030978225]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="bg1" type="Parallax2D" parent="." unique_id=1210110746]
+scroll_scale = Vector2(0.013, 0)
+repeat_size = Vector2(576, 0)
+repeat_times = 3
+
+[node name="Sprite2D" type="TextureRect" parent="bg1" unique_id=691221929]
+offset_right = 576.0
+offset_bottom = 324.0
+texture = ExtResource("2_42s4r")
+
+[node name="bg2" type="Parallax2D" parent="." unique_id=1426055915]
+scroll_scale = Vector2(0.025, 0)
+repeat_size = Vector2(576, 0)
+repeat_times = 3
+
+[node name="Sprite2D" type="TextureRect" parent="bg2" unique_id=171781746]
+offset_right = 576.0
+offset_bottom = 324.0
+texture = ExtResource("3_kopta")
+
+[node name="bg3" type="Parallax2D" parent="." unique_id=1912015432]
+scroll_scale = Vector2(0.05, 0)
+repeat_size = Vector2(576, 0)
+repeat_times = 3
+
+[node name="Sprite2D" type="TextureRect" parent="bg3" unique_id=1124470524]
+offset_right = 576.0
+offset_bottom = 324.0
+texture = ExtResource("4_wi0l6")
+
+[node name="bg4" type="Parallax2D" parent="." unique_id=391386608]
+scroll_scale = Vector2(0.1, 0)
+repeat_size = Vector2(576, 0)
+repeat_times = 3
+
+[node name="Sprite2D" type="TextureRect" parent="bg4" unique_id=123740534]
+offset_right = 576.0
+offset_bottom = 324.0
+texture = ExtResource("5_b4xn0")
+
+[node name="bg5" type="Parallax2D" parent="." unique_id=957849318]
+scroll_scale = Vector2(0.2, 0)
+repeat_size = Vector2(574, 0)
+repeat_times = 3
+
+[node name="Sprite2D" type="TextureRect" parent="bg5" unique_id=1449631629]
+offset_right = 576.0
+offset_bottom = 324.0
+texture = ExtResource("6_bdh0s")

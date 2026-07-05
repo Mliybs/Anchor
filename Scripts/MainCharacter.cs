@@ -25,8 +25,8 @@ public partial class MainCharacter : CharacterBody2D
 	{
 		// 阻塞式加载，先这样
 		PickAnchor(ResourceLoader.Load<PackedScene>("res://Scenes/DefaultAnchor.tscn").Instantiate<AnchorBase>());
-        Sprite.Play("idle");
-    }
+		Sprite.Play("idle");
+	}
 
 	public override void _Process(double delta)
 	{
@@ -45,11 +45,11 @@ public partial class MainCharacter : CharacterBody2D
 			velocity += GetGravity() * (float)delta;
 
 			velocity.Y = float.Clamp(float.Abs(velocity.Y), 0, 500) * float.Sign(velocity.Y);
-            var signB = float.Sign(velocity.Y);
+			var signB = float.Sign(velocity.Y);
 
 			if (signA != signB && signA + signB == 0)
 				Sprite.Play("fall");
-        }
+		}
 
 		else if (_anchorState is not PlayerAnchorState.Pulling && Sprite.Animation == "fall")
 		{
@@ -143,20 +143,20 @@ public partial class MainCharacter : CharacterBody2D
 				Anchor?.Position = Anchor.Position with { X = float.Abs(Anchor.Position.X) * (velocity.X < 0 ? 1 : -1 ) };
 		}
 
-        if (!(Sprite.IsPlaying() && Sprite.Animation == "grounded"))
-        {
-            if (Velocity is (0, 0))
-            {
-                Sprite.Play("idle");
-            }
+		if (!(Sprite.IsPlaying() && Sprite.Animation == "grounded"))
+		{
+			if (Velocity is (0, 0))
+			{
+				Sprite.Play("idle");
+			}
 
-            else if (Velocity is (not 0, 0))
-            {
-                Sprite.Play("walk");
-            }
-        }
+			else if (Velocity is (not 0, 0))
+			{
+				Sprite.Play("walk");
+			}
+		}
 
-        Velocity = velocity;
+		Velocity = velocity;
 		MoveAndSlide();
 	}
 
@@ -184,8 +184,8 @@ public partial class MainCharacter : CharacterBody2D
 			Area.SetDeferred(Area2D.PropertyName.Monitoring, false);
 			_shouldSuppressThrow = _anchorState is PlayerAnchorState.Pulling;
 			anchor.Recover();
-            anchor.SetDeferred(AnchorBase.PropertyName.Position, new Vector2(-13, -1));
-            anchor.CallDeferred(MethodName.Reparent, this, false);
+			anchor.SetDeferred(AnchorBase.PropertyName.Position, new Vector2(-13, -1));
+			anchor.CallDeferred(MethodName.Reparent, this, false);
 			_anchorState = PlayerAnchorState.Attached;
 		}
 	}

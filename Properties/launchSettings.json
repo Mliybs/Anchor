@@ -6,7 +6,7 @@
     },
     "配置文件 1": {
       "commandName": "Executable",
-      "executablePath": "D:\\Godot_v4.7-stable_mono_win64\\Godot_v4.7-stable_mono_win64\\Godot_v4.7-stable_mono_win64.exe",
+      "executablePath": "C:\\Users\\63500\\Desktop\\Godot_v4.7-stable_mono_win64\\Godot_v4.7-stable_mono_win64.exe",
       "workingDirectory": ".",
       "debugEngines": "managed"
     }

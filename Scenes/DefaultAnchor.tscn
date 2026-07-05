@@ -10,7 +10,7 @@ height = 12.0
 
 [node name="DefaultAnchor" type="RigidBody2D" unique_id=1885690678 node_paths=PackedStringArray("CollisionShape", "Sprite")]
 collision_layer = 4
-mass = 0.5
+mass = 0.2
 gravity_scale = 0.001
 freeze = true
 contact_monitor = true

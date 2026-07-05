@@ -12,7 +12,7 @@ width = 1.0
 default_color = Color(0.6970001, 0.34016138, 0.002191008, 1)
 
 [node name="MainChara" parent="." unique_id=294548571 node_paths=PackedStringArray("Line") instance=ExtResource("1_8etcy")]
-position = Vector2(42, 66)
+position = Vector2(77, 72)
 scale = Vector2(0.78, 0.78)
 Line = NodePath("../Line")
 
