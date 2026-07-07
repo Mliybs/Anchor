@@ -6,3 +6,11 @@
 project.godot
 project.godot
 Properties/launchSettings.json
+*.png
+*.import
+*.json
+*.dll
+*.pdb
+*.exe
+*.pck
+export_presets.cfg
