@@ -188,7 +188,7 @@ public partial class Openning : Node2D
 		}
 		Car.颠簸(delta);
 		staff.Position = new Vector2((GetViewportRect().Size.X - staff.GetRect().Size.X) / 2 + 80, (GetViewportRect().Size.Y - staff.GetRect().Size.Y) / 2 + 30);
-		if (Input.IsActionJustPressed("ui_accept") || Input.IsActionJustPressed("mouse_button"))
+		if (Input.IsActionJustPressed("ui_accept") || Input.IsActionJustPressed(MouseLeftJustReleased))
 		{
 			FirstTime = DateTime.Now;
 			RemoveChild(staff);
@@ -298,7 +298,7 @@ public partial class Openning : Node2D
 
 	public int 第七幕(double delta, int 幕)
 	{
-		GetTree().ChangeSceneToFile(@"res://Scenes/Stage1.tscn");
+		GetTree().ChangeSceneToFile(@"res://Scenes/stage1.tscn");
 		return 幕 + 1;
 	}
 }

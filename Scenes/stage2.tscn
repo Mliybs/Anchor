@@ -1,0 +1,53 @@
+[gd_scene format=4 uid="uid://bdrlt3rawghrw"]
+
+[ext_resource type="PackedScene" uid="uid://cxo4edvx6bec2" path="res://Scenes/background.tscn" id="2_gu0x3"]
+[ext_resource type="PackedScene" uid="uid://b181i4eipiqg4" path="res://Scenes/MainChara.tscn" id="3_ksd43"]
+[ext_resource type="TileSet" uid="uid://chfpj1pta3gu0" path="res://Scenes/TileMap/MainTileSet.tres" id="4_3ar5n"]
+[ext_resource type="Texture2D" uid="uid://ci5klgvqaqd84" path="res://Assets/Images/door.png" id="5_hn6pn"]
+[ext_resource type="Script" uid="uid://cowcfpl0a7kxy" path="res://Scripts/Door.cs" id="6_lgkra"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_382ya"]
+size = Vector2(25.5, 42)
+
+[node name="Root" type="Node2D" unique_id=523563132]
+metadata/_edit_use_anchors_ = true
+
+[node name="Background" parent="." unique_id=1030978225 instance=ExtResource("2_gu0x3")]
+offset_left = -31.0
+offset_top = -44.0
+offset_right = -31.0
+offset_bottom = -44.0
+
+[node name="Line" type="Line2D" parent="." unique_id=883669342]
+points = PackedVector2Array(0, 0)
+width = 2.0
+default_color = Color(0.010090301, 0.010090301, 0.010090301, 1)
+
+[node name="MainChara" parent="." unique_id=294548571 node_paths=PackedStringArray("Line") instance=ExtResource("3_ksd43")]
+position = Vector2(14, 240)
+scale = Vector2(0.78, 0.78)
+Line = NodePath("../Line")
+
+[node name="Camera2D" type="Camera2D" parent="MainChara" unique_id=208161970]
+scale = Vector2(1.2820513, 1.2820513)
+position_smoothing_enabled = true
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1406508268]
+tile_map_data = PackedByteArray("AAD//wgAIQAAAAAAAAAAAAgAIgAAAAAAAAABAAgAIwAAAAAAAAD//wcAKwAAAAAAAAD//wYAKwAAAAAAAAD//wUAKwAAAAAAAAD//wQAKwAAAAAAAAD//wMAKwAAAAAAAAD//wIAKwAAAAAAAAD//wEAKgAAAAAAAAABAAcAKwAAAAAAAAABAAYAKwAAAAAAAAABAAUAKwAAAAAAAAABAAQAKwAAAAAAAAABAAMAKwAAAAAAAAABAAIAKwAAAAAAAAABAAEAKgAAAAAAAAAAAP//LAAAAAAAAAAAAP7/KwAAAAAAAAAAAP3/KwAAAAAAAAAAAPz/KwAAAAAAAAAAAPv/KwAAAAAAAAAAAPr/KwAAAAAAAAAAAPn/KwAAAAAAAAAAAPj/KgAAAAAAAAACAP//LAAAAAAAAAACAP7/KwAAAAAAAAACAP3/KwAAAAAAAAACAPz/KwAAAAAAAAACAPv/KwAAAAAAAAACAPr/KwAAAAAAAAACAPn/KwAAAAAAAAACAPj/KgAAAAAAAAAGAPb/IwAAAAAAAAAFAPb/IQAAAAAAAAAFAPf/JwAAAAAAAAAGAPf/KQAAAAAAAAACAPH/IQAAAAAAAAACAPL/JwAAAAAAAAADAPH/IwAAAAAAAAADAPL/KQAAAAAAAAA=")
+tile_set = ExtResource("4_3ar5n")
+
+[node name="Door" type="Sprite2D" parent="." unique_id=1203793621 node_paths=PackedStringArray("Area2D", "CollisionShape")]
+position = Vector2(189, -336)
+texture = ExtResource("5_hn6pn")
+script = ExtResource("6_lgkra")
+TargetScenePath = "res://Scenes/stage3.tscn"
+Area2D = NodePath("Area2D")
+CollisionShape = NodePath("Area2D/CollisionShape2D")
+
+[node name="Area2D" type="Area2D" parent="Door" unique_id=549099923]
+position = Vector2(0, -1)
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Door/Area2D" unique_id=1841707446]
+position = Vector2(0, -4)
+shape = SubResource("RectangleShape2D_382ya")

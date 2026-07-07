@@ -37,14 +37,15 @@ tile_map_data = PackedByteArray("AAAAAAYAIgAAAAAAAAABAAYAIgAAAAAAAAACAAYAIgAAAAA
 tile_set = ExtResource("2_bgp44")
 
 [node name="Door" type="Sprite2D" parent="." unique_id=1203793621 node_paths=PackedStringArray("Area2D", "CollisionShape")]
-position = Vector2(738, 174)
+position = Vector2(737, 176)
 texture = ExtResource("3_tqwdr")
 script = ExtResource("4_twg8k")
-TargetScenePath = "res://Scenes/MainGame.tscn"
+TargetScenePath = "res://Scenes/stage2.tscn"
 Area2D = NodePath("Area2D")
 CollisionShape = NodePath("Area2D/CollisionShape2D")
 
 [node name="Area2D" type="Area2D" parent="Door" unique_id=549099923]
+position = Vector2(0, -1)
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Door/Area2D" unique_id=1841707446]
